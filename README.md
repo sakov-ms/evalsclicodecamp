@@ -62,6 +62,8 @@ code .
 4. In the prompt, choose the environment **`local`**.
 5. ATK builds the app package (`appPackage\build\appPackage.local.zip`) and uploads it to your tenant. Watch the *Output* panel for progress; provisioning completes in 1–2 minutes.
 
+![Sign in and select Provision in Microsoft 365 Agents Toolkit](docs/images/atk-screen1.png)
+
 The ATK extension workflow is the same on Windows, macOS, and Linux.
 
 ### 2.4  (Optional) Point the knowledge source at your own SharePoint
