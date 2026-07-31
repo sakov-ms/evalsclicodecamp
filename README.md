@@ -250,7 +250,7 @@ debug logs under `.evals`.
 
 When the evaluation finishes, an HTML report opens in your browser and displays
 the scorecard. If you see the scorecard, you successfully ran your first
-evaluation—congratulations!
+evaluation. Congratulations!
 
 The skill also asks whether you want it to analyze the report. You can accept
 to receive a summary of pass rates, failed prompts, evaluator reasons, and
