@@ -194,12 +194,34 @@ copilot skill add ./skills
 copilot skill list
 ```
 
+### Verify that the skill is installed
+
+Run the verification command for your platform:
+
+**Windows (PowerShell):**
+
+```powershell
+copilot skill list | Select-String 'm365-evals-cli'
+```
+
+**macOS and Linux:**
+
+```bash
+copilot skill list | grep 'm365-evals-cli'
+```
+
+The output should contain `m365-evals-cli`. If no matching line appears, run
+the `copilot skill add` command again from the repository root.
+
 If Copilot CLI is already open, run:
 
 ```text
 /skills reload
 /skills info m365-evals-cli
 ```
+
+The `/skills info` command should display the skill name, description, and
+source. This confirms that the current Copilot CLI session can use it.
 
 You can also install it as a personal skill by copying the
 `m365-evals-cli` folder into `~/.copilot/skills/`.
@@ -272,7 +294,6 @@ the following values to `.env.dev` or `.env.local`:
 ```dotenv
 AZURE_AI_OPENAI_ENDPOINT="https://<resource>.openai.azure.com/"
 AZURE_AI_MODEL_NAME="<supported-gpt-4x-deployment-name>"
-AZURE_AI_API_VERSION="2024-12-01-preview"
 ```
 
 Authenticate with `AZURE_AI_API_KEY` in a local ignored file, or use
@@ -293,11 +314,15 @@ On macOS and Linux, use
 > To use GPT-5.x or an o-series judge, follow the separate code-only custom
 > evaluator exercise below.
 
-#### Use GPT-5 with a code-only custom evaluator
+#### GPT-5.x and o-series judge models (Microsoft Foundry cloud evaluation)
 
-GPT-5.x and o-series judge models require Microsoft Foundry cloud evaluation.
-This path evaluates the built-in `Relevance` and `Coherence` evaluators in
-Foundry while running the included `answer_length` evaluator locally.
+GPT-5.x and o-series models cannot be used with the default local evaluators.
+To use one of these models as the LLM judge, point the CLI at a Microsoft
+Foundry project. The built-in LLM evaluators (`Relevance`, `Coherence`,
+`Groundedness`, and `Similarity`) then run through Microsoft Foundry cloud
+evaluation. The included `answer_length` code evaluator still runs locally.
+
+This routing is automatic and independent of `--judge-backend`.
 
 You need:
 
@@ -354,7 +379,7 @@ runevals \
 
 When `AZURE_AI_PROJECT_ENDPOINT` and `AZURE_AI_MODEL_NAME` are set, the
 built-in LLM evaluators automatically use Microsoft Foundry cloud evaluation.
-The report format remains unchanged.
+The results and report format remain unchanged.
 
 For additional configuration and troubleshooting, continue with the
 [advanced custom evaluators guide](docs/advanced-custom-evaluators.md).

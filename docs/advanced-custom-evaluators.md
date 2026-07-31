@@ -47,7 +47,6 @@ M365_TITLE_ID="T_your-title-id-here"
 TEAMS_APP_TENANT_ID="your-tenant-id"
 AZURE_AI_OPENAI_ENDPOINT="https://<resource>.openai.azure.com/"
 AZURE_AI_MODEL_NAME="<supported-gpt-4x-deployment-name>"
-AZURE_AI_API_VERSION="2024-12-01-preview"
 ```
 
 Authenticate using either:
@@ -251,14 +250,15 @@ Do not commit tenant-specific environment files.
 
 When both `AZURE_AI_PROJECT_ENDPOINT` and `AZURE_AI_MODEL_NAME` are set, the
 built-in LLM evaluators run through Microsoft Foundry cloud evaluation.
+This routing is automatic and independent of `--judge-backend`.
 
 | `AZURE_AI_PROJECT_ENDPOINT` | Supported judge models |
 |---|---|
 | Set | GPT-5.x, o-series, and GPT-4.x through Microsoft Foundry |
 | Unset | GPT-4.x only through the local evaluator path |
 
-For this advanced run, omit `--judge-backend github-copilot`. The Foundry
-project and model variables select the GPT-5 judge.
+The Foundry project and model variables select the GPT-5 judge without changing
+the results or report format.
 
 Microsoft Foundry has deprecated GPT-4.x/GPT-4o judge models, with retirement
 dates through 2026. Plan to use a GPT-5.x deployment.
