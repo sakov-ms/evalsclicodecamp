@@ -193,7 +193,20 @@ From the Foundry project, copy the project endpoint. It has this form:
 https://<account>.services.ai.azure.com/api/projects/<project>
 ```
 
-The model value must be the deployment name, not only the base model family.
+The project endpoint is shown on the Foundry project home page:
+
+![Microsoft Foundry project endpoint highlighted on the project home page](images/gpt5-screen-1.png)
+
+Under **Recent work**, select the GPT-5 deployment that you want to use:
+
+![GPT-5 mini deployment highlighted under Recent work](images/gpt5-screen-2.png)
+
+On the deployment's **Details** tab, copy the deployment **Name**:
+
+![GPT-5 mini deployment name highlighted on the Details tab](images/gpt5-screen-3.png)
+
+Use this deployment name for `AZURE_AI_MODEL_NAME`; do not use only the base
+model family unless it exactly matches the deployment name.
 
 ## 5. Sign in to Azure
 
