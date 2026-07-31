@@ -256,17 +256,6 @@ mkdir -p env
 ${EDITOR:-nano} ./env/.env.dev # Or use: ${EDITOR:-nano} ./env/.env.local
 ```
 
-Do not commit tenant-specific environment files or secrets.
-
-Run the evaluation:
-
-```text
-runevals --judge-backend github-copilot
-```
-
-The CLI discovers the local environment and a supported dataset under `evals`.
-GitHub Copilot judges the built-in LLM evaluators instead of Azure OpenAI.
-
 ---
 
 ## 6. Register the included M365 evals skill
