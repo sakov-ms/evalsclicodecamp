@@ -1,21 +1,54 @@
 {
+  "$schema": "https://raw.githubusercontent.com/microsoft/m365-copilot-eval/refs/heads/main/schema/v1/eval-document.schema.json",
+  "schemaVersion": "1.8.0",
+  "metadata": {
+    "name": "Zava Insurance Claims Agent - RAG Evaluation Set",
+    "description": "Evals CLI dataset scaffolded from zava-InsuranceClaims_latest_QuerySet.tsv + zava-InsuranceClaims_latest_LmcheckList.yaml. AssertionJudge carries each query's SEVAL assertions; Similarity and Groundedness run as defaults and expected_response is synthesised for items that have assertions. Queries without assertions fall back to Relevance + Coherence.",
+    "createdBy": "sakov",
+    "agentName": "Zava Insurance Claims",
+    "tags": [
+      "zava",
+      "insurance",
+      "claims",
+      "rag",
+      "knowledge-retrieval",
+      "cli"
+    ]
+  },
+  "default_evaluators": {
+    "Similarity": {},
+    "Groundedness": {}
+  },
   "items": [
     {
-      "prompt": "What does our claims documentation say about the approval process for insurance claims?",
-      "expected_response": "The agent should retrieve information about the claims approval process from the ZavaClaims SharePoint Shared Documents library, accurately describe the approval steps and criteria, and cite the source document."
+      "prompt": "How long does the investigation stage typically take after a claim is filed, and what happens during it?",
+      "expected_response": "According to the Zava Claims Insurance Policy Guidebook (Claims Timeline, section 8.3), the investigation stage of a claim typically takes 5-15 business days after the claim is filed. During this period, Zava Claims gathers evidence, conducts inspections as needed, takes statements, and reviews documentation related to the loss. For context, a claim is acknowledged within 24 hours, the assigned adjuster contacts the policyholder within 48 hours, a written coverage determination is issued within 5 business days of the investigation's completion, and the standard total cycle time runs 15-30 business days (complex claims may take longer).",
+      "evaluators": {
+        "Citations": {
+          "citation_format": "mixed"
+        }
+      },
+      "evaluators_mode": "extend"
     },
     {
-      "prompt": "What can you help me with as the Zava Insurance Claims agent?",
-      "expected_response": "The agent should provide a coherent, organized overview of its capabilities: viewing claims dashboards, looking up claim details, managing inspections (create, update, list inspectors), updating claim statuses, managing purchase orders, browsing contractors, and referencing claims documentation from SharePoint. The response should be structured and consistent with the agent's declared instructions."
+      "prompt": "What information do I need to provide when filing a new claim with Zava Claims?",
+      "expected_response": "Per the Zava Claims Insurance Policy Guidebook ('Required Information for Claim Submission,' section 8.2), when filing a new claim you should provide your policy number; the date, time, and location of the loss; a description of what happened; the extent of the damage or injury; the police or fire report number (if applicable); the names and contact information of any witnesses; other insurance information (if applicable); and receipts or proof of value for damaged or stolen items. Photos or video of the damage are recommended but not mandatory. You can report a claim 24/7 through the online portal, mobile app, phone, email, fax, in person, or through an authorized Zava Claims agent.",
+      "evaluators": {
+        "Citations": {
+          "citation_format": "mixed"
+        }
+      },
+      "evaluators_mode": "extend"
     },
     {
-      "prompt": "Can you help me write a marketing email for Zava Insurance's new product launch?",
-      "expected_response": "The agent should decline the request, explaining that it is scoped to insurance claims management tasks such as viewing claims, managing inspections, updating statuses, and referencing claims documentation. It should not assist with marketing content."
-    },
-    {
-      "prompt": "Show me all open insurance claims",
-      "expected_response": "The agent should invoke the show-claims-dashboard tool with the status parameter set to 'Open' to display the claims dashboard filtered to show only open claims, including status overview and summary metrics."
+      "prompt": "How do I file a formal written appeal if my claim is denied, and what is the deadline?",
+      "expected_response": "According to the Zava Claims Insurance Policy Guidebook (Internal Appeals Process, section 9.1, Step 2), a formal written appeal must be filed within 60 days of the claim decision. You submit it in writing to the Zava Claims Appeals Department (P.O. Box 88412, Hartford, CT 06199) or by email to appeals@zavaclaims.com, and it must include your policy number, claim number, a detailed basis for the appeal, and supporting documentation. Zava Claims acknowledges the appeal within 5 business days and issues a decision within 30 business days, with the review handled by a senior claims examiner not involved in the original decision. As a recommended first step, you may pursue an informal review with your assigned adjuster or a claims supervisor before filing the formal appeal.",
+      "evaluators": {
+        "Citations": {
+          "citation_format": "mixed"
+        }
+      },
+      "evaluators_mode": "extend"
     }
-  ],
-  "schemaVersion": "1.0.0"
+  ]
 }
