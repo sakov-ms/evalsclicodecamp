@@ -346,9 +346,6 @@ AZURE_AI_OPENAI_ENDPOINT="https://<resource>.openai.azure.com/"
 AZURE_AI_MODEL_NAME="<supported-gpt-4x-deployment-name>"
 ```
 
-Authenticate with `AZURE_AI_API_KEY` in a local ignored file, or use
-`DefaultAzureCredential` after `az login` with the required Azure role.
-
 In Copilot CLI, enter:
 
 ```text

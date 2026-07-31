@@ -49,13 +49,6 @@ AZURE_AI_OPENAI_ENDPOINT="https://<resource>.openai.azure.com/"
 AZURE_AI_MODEL_NAME="<supported-gpt-4x-deployment-name>"
 ```
 
-Authenticate using either:
-
-- `AZURE_AI_API_KEY` in a local, ignored environment file, or
-- `DefaultAzureCredential` after `az login`, with the required Azure role.
-
-Do not commit keys or tenant-specific environment files.
-
 > **Current limitation:** Do not configure this Prompty evaluator with a
 > GPT-5.x or o-series deployment. Those models require Foundry cloud
 > evaluation, and custom Prompty evaluators are not currently routed through
