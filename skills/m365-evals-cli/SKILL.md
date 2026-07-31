@@ -25,10 +25,13 @@ The working directory needs only:
 ```text
 evaluation-workspace\
 ├── env\
-│   └── .env.dev or .env.local
+│   └── .env.local, .env.dev, or .env
 └── evals\
     └── prompts.json (optional before the first run)
 ```
+
+The environment file may alternatively be placed directly in the workspace
+root. `.env.local`, `.env.dev`, and `.env` are all supported equally.
 
 The CLI auto-discovers `evals\prompts.json`. If it does not exist on the first
 run, allow the CLI to create the starter dataset. Do not require users to
