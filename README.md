@@ -174,7 +174,161 @@ When Copilot CLI opens, enter `/login` if prompted, then enter `/version`.
 
 ---
 
-## 5. Prepare the agent environment and run an evaluation
+## 5. Register the included M365 evals skill
+
+This repository includes the skill at `skills/m365-evals-cli`.
+
+From the repository root, register it with Copilot CLI:
+
+**Windows (PowerShell):**
+
+```powershell
+copilot skill add .\skills
+copilot skill list
+```
+
+**macOS and Linux:**
+
+```bash
+copilot skill add ./skills
+copilot skill list
+```
+
+If Copilot CLI is already open, run:
+
+```text
+/skills reload
+/skills info m365-evals-cli
+```
+
+You can also install it as a personal skill by copying the
+`m365-evals-cli` folder into `~/.copilot/skills/`.
+
+---
+
+## 6. Invoke the skill from GitHub Copilot CLI
+
+Start Copilot CLI from the agent or evaluation workspace:
+
+**Windows, macOS, and Linux:**
+
+```text
+copilot
+```
+
+Then enter:
+
+```text
+Can you run evals on my zava-insurance-claims agent using the evals-cli skill?
+```
+
+The skill checks the eval CLI version and environment, runs with the GitHub
+Copilot judge, starts with concurrency `1`, and writes timestamped results and
+debug logs under `.evals`.
+
+### Run an evaluation
+
+Before continuing to custom evaluators, ask Copilot CLI to run the bundled
+retrieval-evaluator dataset:
+
+```text
+Can you run an evaluation using the evals cli skill for the zava-insurance-claims agent for the dataset - "C:\Users\sakov\bootcamp\zava-insurance-claims\evals\rag-happy-paths-bundle.json"
+```
+
+If the repository is cloned elsewhere, replace the absolute Windows path with
+the path to `zava-insurance-claims/evals/rag-happy-paths-bundle.json` on your
+machine. On macOS and Linux, use the corresponding forward-slash path.
+
+### Run Retrieval Evaluators on your agent
+
+The repository also includes the `AssertionJudge` custom evaluator under
+`zava-insurance-claims/custom-evaluators` and its dataset at
+`zava-insurance-claims/evals/zava-insurance-claims.json`.
+
+In Copilot CLI, enter:
+
+```text
+Can you run an evaluation for the zava-insurance-claims agent using the evals CLI and the dataset "C:\Users\sakov\bootcamp\zava-insurance-claims\evals\zava-insurance-claims.json"?
+```
+
+This dataset uses a Prompty-based custom evaluator and requires Azure OpenAI
+configuration. Do not use the GitHub Copilot judge for this run. Replace the
+absolute path when the repository is cloned elsewhere.
+
+For the complete Azure custom-evaluator setup and the separate GPT-5 Microsoft
+Foundry exercise, continue with the
+[advanced custom evaluators guide](docs/advanced-custom-evaluators.md).
+
+### Review the evaluation scorecard
+
+After a run, users can review the scorecard in either of two ways:
+
+1. Ask Copilot CLI to analyze the result:
+
+   ```text
+   Analyze the latest evaluation scorecard under .evals. Summarize pass rates, failed prompts, evaluator reasons, and recommended next steps.
+   ```
+
+2. Open the generated `.evals\<timestamp>.html` report in a browser and inspect
+   the summary, aggregate evaluator scores, and individual prompt cards.
+
+Treat reports and debug logs as potentially sensitive because they can contain
+prompts, agent responses, citations, or retrieved workplace content.
+
+---
+
+## 7. The prioritized datasets
+
+PR #360 is about retrieval evaluators, so all datasets are RAG focused
+
+### RAG (`evals/rag-*.json`) — 8 tests
+
+| Priority | File | What it covers | Expected outcome |
+|---|---|---|---|
+| **P1** | `rag-01-mortgage-joint-check-threshold.json` | Happy `RetrievalQuery` + `RetrievalResult` baseline — mortgage joint-check threshold ($10K) from §8.4 | **Pass** |
+| **P1** | `rag-07-failure-no-matching-query.json` | Failure code `no_matching_query` | **Fail** (intended) |
+| **P1** | `rag-08-failure-required-terms-missing.json` | Failure code `required_terms_missing`; `includes_missing=['unicorn']` | **Fail** (intended) |
+| **P1** | `rag-09-failure-excluded-terms-found.json` | Failure code `excluded_terms_found`; `excludes_found=['claim']` | **Fail** (intended) |
+| **P1** | `rag-10-failure-not-retrieved.json` | Failure code `not_retrieved` (or `error` if capability had no hits) | **Fail** (intended) |
+| **P2** | `rag-03-deductibles-min-count.json` | `min_expected_count` count-only path (§2 Definitions + §6.1 HomeShield) | **Pass** |
+| **P2** | `rag-11-max-rank-boundary-strict.json` | `max_rank: 1` boundary — Claims Timeline (§8.3) | **Fail** (likely) |
+| **P2** | `rag-12-max-rank-boundary-relaxed.json` | Same prompt as rag-11, `max_rank: 20` — proves `max_rank` is honored | **Pass** |
+
+
+---
+
+## 8. Filing bugs
+
+File every finding as a **new issue** in the private repo:
+
+🐞 **<https://github.com/microsoft/M365-Copilot-Agent-Evals/issues/new>**
+
+### Required steps
+1. Open the link above (you must have read access to the private `microsoft/M365-Copilot-Agent-Evals` repo).
+2. Give the issue a **clear, specific title** — e.g. `runevals resolves --prompts-file relative to npm install dir, not cwd`.
+3. **Add the `bugbash` label** (Labels gear on the right side of the issue form → search for `bugbash` → select it). This is how the team triages bug-bash findings.
+4. (Recommended) Run the commands with `--log-level debug` for rich logs. Please add screenshots and the logs/ error messages in the issue. 
+
+### Include in the issue body
+- The **dataset file** used (e.g. `rag-08-failure-required-terms-missing.json`) — attach or paste the JSON.
+- The **full evaluator output JSON** from the report (`matched_items`, `missing_items`, `extract_failures`, `matched_queries`, `includes_missing`, `excludes_found`).
+- The **CLI version**: output of `npm ls -g @microsoft/m365-copilot-eval`.
+- The **exact command** you ran.
+- A **screenshot of the HTML report card** (`.evals\<timestamp>.html`) for the failing prompt.
+- The **relevant chunk of the `--log-level debug` console output** (redact tokens).
+- **Expected vs. actual** behavior in 1–2 sentences.
+
+> ⚠️ Do NOT paste secrets — scrub `AZURE_AI_API_KEY`, bearer tokens, and tenant-specific URLs from logs before posting.
+
+---
+
+## 9. Troubleshooting
+
+### Prepare the agent environment and run an evaluation
+
+The evals CLI skill normally performs these checks. Use the following steps
+only if the skill reports that it cannot find the required environment file,
+tenant ID, or agent ID.
 
 Run commands from inside the `zava-insurance-claims` folder.
 
@@ -190,7 +344,7 @@ For an existing deployed agent that is not in an ATK project, create an `env`
 folder with either an `.env.dev` or `.env.local` file containing the same
 variables.
 
-### Find the tenant ID and agent ID
+#### Find the tenant ID and agent ID
 
 For an ATK project, provisioning normally writes both values to `.env.dev` or
 `.env.local` in either the project root or the `env` folder.
@@ -256,157 +410,7 @@ mkdir -p env
 ${EDITOR:-nano} ./env/.env.dev # Or use: ${EDITOR:-nano} ./env/.env.local
 ```
 
----
-
-## 6. Register the included M365 evals skill
-
-This repository includes the skill at `skills/m365-evals-cli`.
-
-From the repository root, register it with Copilot CLI:
-
-**Windows (PowerShell):**
-
-```powershell
-copilot skill add .\skills
-copilot skill list
-```
-
-**macOS and Linux:**
-
-```bash
-copilot skill add ./skills
-copilot skill list
-```
-
-If Copilot CLI is already open, run:
-
-```text
-/skills reload
-/skills info m365-evals-cli
-```
-
-You can also install it as a personal skill by copying the
-`m365-evals-cli` folder into `~/.copilot/skills/`.
-
----
-
-## 7. Invoke the skill from GitHub Copilot CLI
-
-Start Copilot CLI from the agent or evaluation workspace:
-
-**Windows, macOS, and Linux:**
-
-```text
-copilot
-```
-
-Then enter:
-
-```text
-Can you run evals on my zava-insurance-claims agent using the evals-cli skill?
-```
-
-The skill checks the eval CLI version and environment, runs with the GitHub
-Copilot judge, starts with concurrency `1`, and writes timestamped results and
-debug logs under `.evals`.
-
-### Run the retrieval-evaluator dataset
-
-Before continuing to custom evaluators, ask Copilot CLI to run the bundled
-retrieval-evaluator dataset:
-
-```text
-Can you run an evaluation using the evals cli skill for the zava-insurance-claims agent for the dataset - "C:\Users\sakov\bootcamp\zava-insurance-claims\evals\rag-happy-paths-bundle.json"
-```
-
-If the repository is cloned elsewhere, replace the absolute Windows path with
-the path to `zava-insurance-claims/evals/rag-happy-paths-bundle.json` on your
-machine. On macOS and Linux, use the corresponding forward-slash path.
-
-### Run the advanced custom-evaluator dataset
-
-The repository also includes the `AssertionJudge` custom evaluator under
-`zava-insurance-claims/custom-evaluators` and its dataset at
-`zava-insurance-claims/evals/zava-insurance-claims.json`.
-
-In Copilot CLI, enter:
-
-```text
-Can you run an evaluation for the zava-insurance-claims agent using the evals CLI and the dataset "C:\Users\sakov\bootcamp\zava-insurance-claims\evals\zava-insurance-claims.json"?
-```
-
-This dataset uses a Prompty-based custom evaluator and requires Azure OpenAI
-configuration. Do not use the GitHub Copilot judge for this run. Replace the
-absolute path when the repository is cloned elsewhere.
-
-For the complete Azure custom-evaluator setup and the separate GPT-5 Microsoft
-Foundry exercise, continue with the
-[advanced custom evaluators guide](docs/advanced-custom-evaluators.md).
-
-### Review the evaluation scorecard
-
-After a run, users can review the scorecard in either of two ways:
-
-1. Ask Copilot CLI to analyze the result:
-
-   ```text
-   Analyze the latest evaluation scorecard under .evals. Summarize pass rates, failed prompts, evaluator reasons, and recommended next steps.
-   ```
-
-2. Open the generated `.evals\<timestamp>.html` report in a browser and inspect
-   the summary, aggregate evaluator scores, and individual prompt cards.
-
-Treat reports and debug logs as potentially sensitive because they can contain
-prompts, agent responses, citations, or retrieved workplace content.
-
----
-
-## 8. The prioritized datasets
-
-PR #360 is about retrieval evaluators, so all datasets are RAG focused
-
-### RAG (`evals/rag-*.json`) — 8 tests
-
-| Priority | File | What it covers | Expected outcome |
-|---|---|---|---|
-| **P1** | `rag-01-mortgage-joint-check-threshold.json` | Happy `RetrievalQuery` + `RetrievalResult` baseline — mortgage joint-check threshold ($10K) from §8.4 | **Pass** |
-| **P1** | `rag-07-failure-no-matching-query.json` | Failure code `no_matching_query` | **Fail** (intended) |
-| **P1** | `rag-08-failure-required-terms-missing.json` | Failure code `required_terms_missing`; `includes_missing=['unicorn']` | **Fail** (intended) |
-| **P1** | `rag-09-failure-excluded-terms-found.json` | Failure code `excluded_terms_found`; `excludes_found=['claim']` | **Fail** (intended) |
-| **P1** | `rag-10-failure-not-retrieved.json` | Failure code `not_retrieved` (or `error` if capability had no hits) | **Fail** (intended) |
-| **P2** | `rag-03-deductibles-min-count.json` | `min_expected_count` count-only path (§2 Definitions + §6.1 HomeShield) | **Pass** |
-| **P2** | `rag-11-max-rank-boundary-strict.json` | `max_rank: 1` boundary — Claims Timeline (§8.3) | **Fail** (likely) |
-| **P2** | `rag-12-max-rank-boundary-relaxed.json` | Same prompt as rag-11, `max_rank: 20` — proves `max_rank` is honored | **Pass** |
-
-
----
-
-## 9. Filing bugs
-
-File every finding as a **new issue** in the private repo:
-
-🐞 **<https://github.com/microsoft/M365-Copilot-Agent-Evals/issues/new>**
-
-### Required steps
-1. Open the link above (you must have read access to the private `microsoft/M365-Copilot-Agent-Evals` repo).
-2. Give the issue a **clear, specific title** — e.g. `runevals resolves --prompts-file relative to npm install dir, not cwd`.
-3. **Add the `bugbash` label** (Labels gear on the right side of the issue form → search for `bugbash` → select it). This is how the team triages bug-bash findings.
-4. (Recommended) Run the commands with `--log-level debug` for rich logs. Please add screenshots and the logs/ error messages in the issue. 
-
-### Include in the issue body
-- The **dataset file** used (e.g. `rag-08-failure-required-terms-missing.json`) — attach or paste the JSON.
-- The **full evaluator output JSON** from the report (`matched_items`, `missing_items`, `extract_failures`, `matched_queries`, `includes_missing`, `excludes_found`).
-- The **CLI version**: output of `npm ls -g @microsoft/m365-copilot-eval`.
-- The **exact command** you ran.
-- A **screenshot of the HTML report card** (`.evals\<timestamp>.html`) for the failing prompt.
-- The **relevant chunk of the `--log-level debug` console output** (redact tokens).
-- **Expected vs. actual** behavior in 1–2 sentences.
-
-> ⚠️ Do NOT paste secrets — scrub `AZURE_AI_API_KEY`, bearer tokens, and tenant-specific URLs from logs before posting.
-
----
-
-## 10. Troubleshooting
+### Common issues
 
 | Symptom | Cause / Fix |
 |---|---|
@@ -417,7 +421,7 @@ File every finding as a **new issue** in the private repo:
 | EULA has not been accepted | Run `runevals accept-eula`, then rerun the evaluation. |
 | GitHub authentication failed for the Copilot judge | Run `gh auth status`, then `gh auth login` if needed. Confirm the signed-in account has an active GitHub Copilot subscription and that organizational policy permits Copilot CLI. |
 | Copilot judge model is unavailable | Leave `GITHUB_COPILOT_JUDGE_MODEL` unset to use `auto`, or set it to a model available to the signed-in account. There is no `--judge-model` flag. |
-| `ERROR Missing required environment variables: …` | Neither `env\.env.dev` nor `env\.env.local` was found with the required values. Confirm you ran the command from the `zava-insurance-claims` folder and that `M365_TITLE_ID` and `TEAMS_APP_TENANT_ID` are populated as described in §5. |
+| `ERROR Missing required environment variables: …` | Neither `env\.env.dev` nor `env\.env.local` was found with the required values. Confirm you ran the command from the `zava-insurance-claims` folder and that `M365_TITLE_ID` and `TEAMS_APP_TENANT_ID` are populated using the preparation guidance above. |
 | No prompts file was found | Run from the workspace root and confirm a supported `prompts.json`, `evals.json`, or `tests.json` exists in the current directory or under `evals`. Use `--prompts-file <path>` when more than one dataset exists or auto-discovery chooses the wrong file. |
 | Agent not found or inaccessible | Confirm the agent is deployed in the tenant identified by `TEAMS_APP_TENANT_ID`, that `M365_TITLE_ID` is correct, and that the signed-in M365 account can open the agent in Microsoft 365 Copilot. |
 | M365 sign-in fails on macOS or Linux | On macOS, install Company Portal; Intel Macs currently have a known broker limitation. On Debian/Ubuntu, install the broker libraries listed in §4 before rerunning. |
@@ -431,7 +435,7 @@ File every finding as a **new issue** in the private repo:
 
 ---
 
-## 11. Cleanup
+## 10. Cleanup
 
 **Windows (PowerShell):**
 
