@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/M365-Copilot-Agent-Evals/main/schema/v1/eval-document.schema.json",
+  "schemaVersion": "1.7.0",
+  "description": "Advanced example: GPT-5 Foundry cloud judges plus a local answer-length custom evaluator.",
+  "default_evaluators": {
+    "Relevance": {},
+    "Coherence": {},
+    "answer_length": {
+      "threshold": 1
+    }
+  },
+  "items": [
+    {
+      "prompt": "For a dwelling claim on a property with a mortgage, when is a joint check with the mortgage company required?",
+      "expected_response": "According to the Zava claims insurance policy guidebook, a mortgage company joint check is required for dwelling claims exceeding $10,000 on properties with a mortgage."
+    }
+  ]
+}

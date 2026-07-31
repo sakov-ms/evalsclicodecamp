@@ -186,6 +186,58 @@ TEAMS_APP_TENANT_ID="your-tenant-id"
 For an existing deployed agent that is not in an ATK project, create an `env`
 folder and an `.env.local` file containing the same variables.
 
+### Find the tenant ID and agent ID
+
+For an ATK project, provisioning normally writes both values to `.env.local`
+in the project root. Some workspaces instead keep the file at
+`env/.env.local`.
+
+**Windows (PowerShell):**
+
+```powershell
+Select-String `
+  -Path .\.env.local, .\env\.env.local `
+  -Pattern '^(M365_TITLE_ID|TEAMS_APP_TENANT_ID)=' `
+  -ErrorAction SilentlyContinue
+```
+
+**macOS and Linux:**
+
+```bash
+grep -E '^(M365_TITLE_ID|TEAMS_APP_TENANT_ID)=' \
+  ./.env.local ./env/.env.local 2>/dev/null
+```
+
+If the tenant ID is not in an environment file, retrieve it from Azure:
+
+1. Sign in to the [Azure portal](https://portal.azure.com).
+2. Open **Microsoft Entra ID**.
+3. Open **Overview**.
+4. Copy **Tenant ID** and use it as `TEAMS_APP_TENANT_ID`.
+
+You can also retrieve the tenant ID with Azure CLI:
+
+```text
+az account show --query tenantId --output tsv
+```
+
+For the agent ID:
+
+- **ATK agent:** use `M365_TITLE_ID` from `.env.local` after provisioning.
+- **Existing non-ATK agent:** obtain `M365_AGENT_ID` from the Microsoft Teams
+  admin center, Microsoft 365 admin center, or the publishing pipeline output.
+  Supported IDs are typically user-scoped (`U_...`) or tenant-scoped
+  (`T_...declarativeAgent`).
+- Do **not** substitute the Microsoft Entra **Application (client) ID** shown in
+  Azure Portal. That GUID identifies an app registration, not the M365 agent
+  title ID expected by `runevals`.
+
+To override the environment value for one run:
+
+```text
+runevals --judge-backend github-copilot --m365-agent-id "<agent-id>"
+```
+
 **Windows (PowerShell):**
 
 ```powershell
@@ -258,12 +310,61 @@ copilot
 Then enter:
 
 ```text
-Use the /m365-evals-cli skill to run evals for this workspace.
+Can you run evals on my zava-insurance-claims agent using the evals-cli skill?
 ```
 
 The skill checks the eval CLI version and environment, runs with the GitHub
 Copilot judge, starts with concurrency `1`, and writes timestamped results and
 debug logs under `.evals`.
+
+### Run the retrieval-evaluator dataset
+
+Before continuing to custom evaluators, ask Copilot CLI to run the bundled
+retrieval-evaluator dataset:
+
+```text
+Can you run an evaluation using the evals cli skill for the zava-insurance-claims agent for the dataset - "C:\Users\sakov\bootcamp\zava-insurance-claims\evals\rag-happy-paths-bundle.json"
+```
+
+If the repository is cloned elsewhere, replace the absolute Windows path with
+the path to `zava-insurance-claims/evals/rag-happy-paths-bundle.json` on your
+machine. On macOS and Linux, use the corresponding forward-slash path.
+
+### Run the advanced custom-evaluator dataset
+
+The repository also includes the `AssertionJudge` custom evaluator under
+`zava-insurance-claims/custom-evaluators` and its dataset at
+`zava-insurance-claims/evals/zava-insurance-claims.json`.
+
+In Copilot CLI, enter:
+
+```text
+Can you run an evaluation for the zava-insurance-claims agent using the evals CLI and the dataset "C:\Users\sakov\bootcamp\zava-insurance-claims\evals\zava-insurance-claims.json"?
+```
+
+This dataset uses a Prompty-based custom evaluator and requires Azure OpenAI
+configuration. Do not use the GitHub Copilot judge for this run. Replace the
+absolute path when the repository is cloned elsewhere.
+
+For the complete Azure custom-evaluator setup and the separate GPT-5 Microsoft
+Foundry exercise, continue with the
+[advanced custom evaluators guide](docs/advanced-custom-evaluators.md).
+
+### Review the evaluation scorecard
+
+After a run, users can review the scorecard in either of two ways:
+
+1. Ask Copilot CLI to analyze the result:
+
+   ```text
+   Analyze the latest evaluation scorecard under .evals. Summarize pass rates, failed prompts, evaluator reasons, and recommended next steps.
+   ```
+
+2. Open the generated `.evals\<timestamp>.html` report in a browser and inspect
+   the summary, aggregate evaluator scores, and individual prompt cards.
+
+Treat reports and debug logs as potentially sensitive because they can contain
+prompts, agent responses, citations, or retrieved workplace content.
 
 ---
 
