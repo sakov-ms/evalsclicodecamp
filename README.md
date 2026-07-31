@@ -324,12 +324,25 @@ evaluation. The included `answer_length` code evaluator still runs locally.
 
 This routing is automatic and independent of `--judge-backend`.
 
-You need:
+Use the deployment flow from
+[Get your Azure OpenAI endpoint and API key](https://learn.microsoft.com/microsoft-365/copilot/extensibility/evaluations-cli-get-env-values#get-your-azure-openai-endpoint-and-api-key),
+but deploy `gpt-5-mini` instead of the GPT-4 model shown in that guide:
 
-1. A Microsoft Foundry project.
-2. A chat-capable GPT-5.x or o-series deployment, such as `gpt-5-mini`.
-3. The **Azure AI Developer** role on the project.
-4. Azure CLI authentication through Microsoft Entra.
+1. Sign in to the [Azure portal](https://portal.azure.com).
+2. Search for **OpenAI**, select **Azure OpenAI**, and select **Create**.
+3. Complete the **Create AI Foundry resource** form, then select
+   **Review + create**.
+4. After deployment completes, open the resource in the
+   [Microsoft Foundry portal](https://ai.azure.com).
+5. Open **Models + endpoints**. In the newer Foundry interface, select
+   **Models**.
+6. Select **Deploy model** > **Deploy base model**.
+7. Select **gpt-5-mini**, confirm the deployment settings, and select
+   **Deploy**. GPT-5 mini is supported for this Foundry cloud-evaluation path.
+8. Wait for the deployment to report **Succeeded**.
+
+You need the **Azure AI Developer** role on the project and Azure CLI
+authentication through Microsoft Entra.
 
 From the Foundry project home page, copy the **Project endpoint**:
 
@@ -343,19 +356,28 @@ On the deployment's **Details** tab, copy the deployment **Name**:
 
 ![GPT-5 mini deployment name highlighted on the Details tab](docs/images/gpt5-screen-3.png)
 
-Sign in and configure `.env.dev` or `.env.local`:
+Sign in to the tenant that contains the Foundry project:
 
 ```text
 az login
 ```
+
+If the project is in another tenant, use:
+
+```text
+az login --tenant <tenant-id>
+```
+
+Configure `.env.dev` or `.env.local`:
 
 ```dotenv
 AZURE_AI_PROJECT_ENDPOINT="https://<account>.services.ai.azure.com/api/projects/<project>"
 AZURE_AI_MODEL_NAME="gpt-5-mini"
 ```
 
-If the project is in a different tenant, also set `AZURE_TENANT_ID`. The
-Foundry path uses Entra authentication; `AZURE_AI_API_KEY` is not used.
+These are the only two additional variables required for the Foundry judge.
+The Foundry path uses Entra authentication; `AZURE_AI_OPENAI_ENDPOINT`,
+`AZURE_AI_API_KEY`, and `AZURE_AI_API_VERSION` are not used.
 
 Run the included GPT-5 dataset from the `zava-insurance-claims` folder:
 

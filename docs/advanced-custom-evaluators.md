@@ -178,13 +178,25 @@ character count.
 GPT-5.x and o-series judge models cannot use the eval CLI's default local
 evaluator path. They require Microsoft Foundry cloud evaluation.
 
-Prepare:
+Use the deployment flow from
+[Get your Azure OpenAI endpoint and API key](https://learn.microsoft.com/microsoft-365/copilot/extensibility/evaluations-cli-get-env-values#get-your-azure-openai-endpoint-and-api-key),
+but deploy `gpt-5-mini` instead of the GPT-4 model shown in that guide:
 
-1. A Microsoft Foundry project.
-2. A chat-capable GPT-5.x or o-series model deployment, such as
-   `gpt-5-mini`.
-3. The **Azure AI Developer** role on the Foundry project.
-4. Azure CLI authentication through Microsoft Entra.
+1. Sign in to the [Azure portal](https://portal.azure.com).
+2. Search for **OpenAI**, select **Azure OpenAI**, and select **Create**.
+3. Complete the **Create AI Foundry resource** form, then select
+   **Review + create**.
+4. After deployment completes, open the resource in the
+   [Microsoft Foundry portal](https://ai.azure.com).
+5. Open **Models + endpoints**. In the newer Foundry interface, select
+   **Models**.
+6. Select **Deploy model** > **Deploy base model**.
+7. Select **gpt-5-mini**, confirm the deployment settings, and select
+   **Deploy**. GPT-5 mini is supported for this Foundry cloud-evaluation path.
+8. Wait for the deployment to report **Succeeded**.
+
+You need the **Azure AI Developer** role on the project and Azure CLI
+authentication through Microsoft Entra.
 
 From the Foundry project, copy the project endpoint. It has this form:
 
@@ -231,20 +243,14 @@ such as `zava-insurance-claims/env/.env.dev` or
 `zava-insurance-claims/env/.env.local`:
 
 ```dotenv
-M365_TITLE_ID="T_your-title-id-here"
-TEAMS_APP_TENANT_ID="your-tenant-id"
 AZURE_AI_PROJECT_ENDPOINT="https://myacct.services.ai.azure.com/api/projects/myproj"
 AZURE_AI_MODEL_NAME="gpt-5-mini"
 ```
 
-If Azure CLI defaults to a different tenant from the Foundry project, also
-set:
-
-```dotenv
-AZURE_TENANT_ID="your-foundry-project-tenant-id"
-```
-
-Do not commit tenant-specific environment files.
+These are the only two additional variables required for the Foundry judge.
+The agent and tenant identifiers should already be present from the base setup.
+`AZURE_AI_OPENAI_ENDPOINT`, `AZURE_AI_API_KEY`, and `AZURE_AI_API_VERSION` are
+not used for this path.
 
 ## 7. How judge selection works
 
