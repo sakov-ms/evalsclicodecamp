@@ -288,25 +288,7 @@ zava-insurance-claims/
 ```
 
 The `zava-insurance-claims.json` dataset uses the Prompty-based
-`AssertionJudge` custom evaluator. It requires an Azure OpenAI deployment. Add
-the following values to `.env.dev` or `.env.local`:
-
-```dotenv
-AZURE_AI_OPENAI_ENDPOINT="https://<resource>.openai.azure.com/"
-AZURE_AI_MODEL_NAME="<supported-gpt-4x-deployment-name>"
-```
-
-Authenticate with `AZURE_AI_API_KEY` in a local ignored file, or use
-`DefaultAzureCredential` after `az login` with the required Azure role.
-
-In Copilot CLI, enter:
-
-```text
-Can you run an evaluation for the zava-insurance-claims agent using the evals CLI and the dataset "zava-insurance-claims\evals\zava-insurance-claims.json"? This dataset uses the AssertionJudge custom evaluator, so use the Azure judge configuration.
-```
-
-On macOS and Linux, use
-`zava-insurance-claims/evals/zava-insurance-claims.json`.
+`AssertionJudge` custom evaluator. It requires an Azure OpenAI deployment.
 
 #### Deploy GPT-5 mini in Microsoft Foundry
 
@@ -353,6 +335,25 @@ If the project is in another tenant, use:
 ```text
 az login --tenant <tenant-id>
 ```
+
+Add the following values to `.env.dev` or `.env.local`:
+
+```dotenv
+AZURE_AI_OPENAI_ENDPOINT="https://<resource>.openai.azure.com/"
+AZURE_AI_MODEL_NAME="<supported-gpt-4x-deployment-name>"
+```
+
+Authenticate with `AZURE_AI_API_KEY` in a local ignored file, or use
+`DefaultAzureCredential` after `az login` with the required Azure role.
+
+In Copilot CLI, enter:
+
+```text
+Can you run an evaluation for the zava-insurance-claims agent using the evals CLI and the dataset "zava-insurance-claims\evals\zava-insurance-claims.json"? This dataset uses the AssertionJudge custom evaluator, so use the Azure judge configuration.
+```
+
+On macOS and Linux, use
+`zava-insurance-claims/evals/zava-insurance-claims.json`.
 
 Configure `.env.dev` or `.env.local`:
 
