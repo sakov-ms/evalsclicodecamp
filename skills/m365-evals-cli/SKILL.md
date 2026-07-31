@@ -25,7 +25,7 @@ The working directory needs only:
 ```text
 evaluation-workspace\
 ├── env\
-│   └── .env.local
+│   └── .env.dev or .env.local
 └── evals\
     └── prompts.json (optional before the first run)
 ```

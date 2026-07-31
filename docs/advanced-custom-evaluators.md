@@ -228,7 +228,8 @@ The Foundry cloud path uses Entra authentication through
 ## 6. Configure the Foundry judge
 
 Add these values to the environment file used by the evaluation workspace,
-such as `zava-insurance-claims/env/.env.local`:
+such as `zava-insurance-claims/env/.env.dev` or
+`zava-insurance-claims/env/.env.local`:
 
 ```dotenv
 M365_TITLE_ID="T_your-title-id-here"

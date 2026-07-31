@@ -178,8 +178,8 @@ When Copilot CLI opens, enter `/login` if prompted, then enter `/version`.
 
 Run commands from inside the `zava-insurance-claims` folder.
 
-Agents Toolkit normally generates an `env` folder with the `.env.dev` file,
-and it contains the following values. Confirm they are present and non-empty:
+Agents Toolkit normally generates an `env` folder with either an `.env.dev` or
+`.env.local` file. Confirm it contains the following non-empty values:
 
 ```dotenv
 M365_TITLE_ID="T_your-title-id-here"
@@ -187,19 +187,19 @@ TEAMS_APP_TENANT_ID="your-tenant-id"
 ```
 
 For an existing deployed agent that is not in an ATK project, create an `env`
-folder and an `.env.local` file containing the same variables.
+folder with either an `.env.dev` or `.env.local` file containing the same
+variables.
 
 ### Find the tenant ID and agent ID
 
-For an ATK project, provisioning normally writes both values to `.env.local`
-in the project root. Some workspaces instead keep the file at
-`env/.env.local`.
+For an ATK project, provisioning normally writes both values to `.env.dev` or
+`.env.local` in either the project root or the `env` folder.
 
 **Windows (PowerShell):**
 
 ```powershell
 Select-String `
-  -Path .\.env.local, .\env\.env.local `
+  -Path .\.env.dev, .\.env.local, .\env\.env.dev, .\env\.env.local `
   -Pattern '^(M365_TITLE_ID|TEAMS_APP_TENANT_ID)=' `
   -ErrorAction SilentlyContinue
 ```
@@ -208,7 +208,7 @@ Select-String `
 
 ```bash
 grep -E '^(M365_TITLE_ID|TEAMS_APP_TENANT_ID)=' \
-  ./.env.local ./env/.env.local 2>/dev/null
+  ./.env.dev ./.env.local ./env/.env.dev ./env/.env.local 2>/dev/null
 ```
 
 If the tenant ID is not in an environment file, retrieve it from Azure:
@@ -226,7 +226,8 @@ az account show --query tenantId --output tsv
 
 For the agent ID:
 
-- **ATK agent:** use `M365_TITLE_ID` from `.env.local` after provisioning.
+- **ATK agent:** use `M365_TITLE_ID` from `.env.dev` or `.env.local` after
+  provisioning.
 - **Existing non-ATK agent:** obtain `M365_AGENT_ID` from the Microsoft Teams
   admin center, Microsoft 365 admin center, or the publishing pipeline output.
   Supported IDs are typically user-scoped (`U_...`) or tenant-scoped
@@ -245,14 +246,14 @@ runevals --judge-backend github-copilot --m365-agent-id "<agent-id>"
 
 ```powershell
 New-Item -ItemType Directory -Force env
-notepad .\env\.env.local
+notepad .\env\.env.dev # Or use: notepad .\env\.env.local
 ```
 
 **macOS and Linux:**
 
 ```bash
 mkdir -p env
-${EDITOR:-nano} ./env/.env.local
+${EDITOR:-nano} ./env/.env.dev # Or use: ${EDITOR:-nano} ./env/.env.local
 ```
 
 Do not commit tenant-specific environment files or secrets.
@@ -427,7 +428,7 @@ File every finding as a **new issue** in the private repo:
 | EULA has not been accepted | Run `runevals accept-eula`, then rerun the evaluation. |
 | GitHub authentication failed for the Copilot judge | Run `gh auth status`, then `gh auth login` if needed. Confirm the signed-in account has an active GitHub Copilot subscription and that organizational policy permits Copilot CLI. |
 | Copilot judge model is unavailable | Leave `GITHUB_COPILOT_JUDGE_MODEL` unset to use `auto`, or set it to a model available to the signed-in account. There is no `--judge-model` flag. |
-| `ERROR Missing required environment variables: …` | `env\.env.local` was not found or is missing values. Confirm you ran the command from the `zava-insurance-claims` folder and that `M365_TITLE_ID` and `TEAMS_APP_TENANT_ID` are populated as described in §5. |
+| `ERROR Missing required environment variables: …` | Neither `env\.env.dev` nor `env\.env.local` was found with the required values. Confirm you ran the command from the `zava-insurance-claims` folder and that `M365_TITLE_ID` and `TEAMS_APP_TENANT_ID` are populated as described in §5. |
 | No prompts file was found | Run from the workspace root and confirm a supported `prompts.json`, `evals.json`, or `tests.json` exists in the current directory or under `evals`. Use `--prompts-file <path>` when more than one dataset exists or auto-discovery chooses the wrong file. |
 | Agent not found or inaccessible | Confirm the agent is deployed in the tenant identified by `TEAMS_APP_TENANT_ID`, that `M365_TITLE_ID` is correct, and that the signed-in M365 account can open the agent in Microsoft 365 Copilot. |
 | M365 sign-in fails on macOS or Linux | On macOS, install Company Portal; Intel Macs currently have a known broker limitation. On Debian/Ubuntu, install the broker libraries listed in §4 before rerunning. |
