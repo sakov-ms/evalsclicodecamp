@@ -46,7 +46,7 @@ to the environment file used by the Zava workspace:
 M365_TITLE_ID="T_your-title-id-here"
 TEAMS_APP_TENANT_ID="your-tenant-id"
 AZURE_AI_OPENAI_ENDPOINT="https://<resource>.openai.azure.com/"
-AZURE_AI_MODEL_NAME="<supported-gpt-4x-deployment-name>"
+AZURE_AI_MODEL_NAME="<deployed-gpt-5x-deployment-name>"
 ```
 
 > **Current limitation:** Do not configure this Prompty evaluator with a

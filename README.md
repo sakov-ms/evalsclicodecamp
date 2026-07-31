@@ -343,7 +343,7 @@ Add the following values to `.env.dev` or `.env.local`:
 
 ```dotenv
 AZURE_AI_OPENAI_ENDPOINT="https://<resource>.openai.azure.com/"
-AZURE_AI_MODEL_NAME="<supported-gpt-4x-deployment-name>"
+AZURE_AI_MODEL_NAME="<deployed-gpt-5x-deployment-name>"
 ```
 
 In Copilot CLI, enter:
