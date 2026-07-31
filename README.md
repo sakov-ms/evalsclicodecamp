@@ -12,16 +12,29 @@
 | **Python 3.10+** | Required by the eval CLI runtime. |
 | **Access to the Zava Claims SharePoint site** | The agent's knowledge source - 'https://microsoft.sharepoint-df.com/sites/CXDev/Shared Documents/Zava Insurance Documents' |
 
+These prerequisites apply to Windows, macOS, and Linux. The current eval CLI
+requires Node.js 24.12.0 or newer, while GitHub Copilot CLI installed through
+npm requires Node.js 22 or newer. Windows users also need PowerShell 6 or
+newer.
+
 ---
 
 ## 2. Install and provision the Zava Insurance Claims agent (via the ATK extension)
 
 ### 2.1  Get the agent project locally
 
+**Windows (PowerShell):**
+
 ```powershell
-cd zava-insurance-claims
-# Either clone the repo, or copy the folder shipped with this bug bash:
-# git clone <repo-url-for-zava-insurance-claims> zava-insurance-claims
+git clone https://github.com/sakov-ms/evalsclicodecamp.git
+cd evalsclicodecamp\zava-insurance-claims
+```
+
+**macOS and Linux:**
+
+```bash
+git clone https://github.com/sakov-ms/evalsclicodecamp.git
+cd evalsclicodecamp/zava-insurance-claims
 ```
 
 You should end up with a folder containing `appPackage\`, `env\`, `teamsapp.yml`, etc.
@@ -29,6 +42,12 @@ You should end up with a folder containing `appPackage\`, `env\`, `teamsapp.yml`
 ### 2.2  Open the agent folder in VS Code
 1. Open VS code. Click on File → Open Folder
 2. Select zava-insurance-claims folder that was downloaded in #1
+
+From a terminal on Windows, macOS, or Linux, you can alternatively run:
+
+```text
+code .
+```
 
 ![Open the zava-insurance-claims folder in VS Code](docs/images/open-folder-zava.png)
 
@@ -41,6 +60,8 @@ You should end up with a folder containing `appPackage\`, `env\`, `teamsapp.yml`
 3. Under **LIFECYCLE**, click **Provision**.
 4. In the prompt, choose the environment **`local`**.
 5. ATK builds the app package (`appPackage\build\appPackage.local.zip`) and uploads it to your tenant. Watch the *Output* panel for progress; provisioning completes in 1–2 minutes.
+
+The ATK extension workflow is the same on Windows, macOS, and Linux.
 
 ### 2.4  (Optional) Point the knowledge source at your own SharePoint
 
@@ -68,65 +89,181 @@ If the agent responds and (for knowledge prompts) cites the SharePoint doc, you'
 
 The CLI is published on npm: **<https://www.npmjs.com/package/@microsoft/m365-copilot-eval>**. Install it globally so the `runevals` command is on your PATH:
 
-```powershell
-npm install -g @microsoft/m365-copilot-eval
+**Windows, macOS, and Linux:**
+
+```text
+npm install -g @microsoft/m365-copilot-eval@latest
 ```
 
 Verify:
-```powershell
-runevals --version 
+
+```text
+runevals --version
 runevals --help
 ```
 
-> You should see 2.* in the version
+> The installed eval CLI version must be **greater than 1.12.0**.
 > If `runevals` is not recognized, ensure your npm global bin folder is on PATH:
-> `npm config get prefix` → add `<that path>` (Windows) or `<that path>/bin` (Mac/Linux) to PATH.
+> `npm config get prefix` → add `<that path>` (Windows) or `<that path>/bin` (macOS/Linux) to PATH.
 
 ---
 
-## 5. Run an evaluation
+## 4. Install and launch GitHub Copilot CLI
 
-From inside the **`zava-insurance-claims`** folder run `runevals`:
+An active GitHub Copilot subscription is required. If your organization manages
+Copilot, its policy must allow GitHub Copilot CLI.
 
-```powershell
-Go to folder zava-insurance-claims
-
-# REACH OUT TO THE BUG BASH ORGANISER FOR A SECRET STEP BEFORE TRYING TO RUN A JOB
-
-runevals --env local --prompts-file "<path to Zava agent>\zava-insurance-claims\evals\rag-07-failure-no-matching-query.json" --log-level debug --output "<path to Zava agent>\zava-insurance-claims\.evals\2026-05-27_19-25-21-560.html"
-```
-
-### What every flag does
-
-| Flag | What it means |
-|---|---|
-| `runevals` | The CLI entry point installed by `npm install -g @microsoft/m365-copilot-eval`. |
-| `--env local` | The ATK environment name. The CLI loads env vars from `env\.env.local` in the current folder (same convention as ATK `provision --env local`). |
-| `--prompts-file ".\evals\rag-07-failure-no-matching-query.json"` | Path to a v1.5.0 eval document containing one or more prompts plus their evaluator configurations. Swap the filename to run a different test. |
-| `--log-level debug` | Verbose CLI logging — shows the prompt, agent response, retrieval artifact, and the per-evaluator pass/fail reasoning. Useful for bug-bashing. Drop to `info` once stable. |
-| `--output ".\.evals\2026-05-27_19-25-21-560.html"` | Where to write the result. **File extension drives the format**: `.html` → styled HTML report (summary banner + aggregates + per-prompt cards), `.json` → raw JSON, `.csv` → flat CSV. Convention is to timestamp the file (`YYYY-MM-DD_HH-mm-ss-fff.html`) so multiple runs don't overwrite. If `--output` is omitted, results print to console only. |
-
-Open the generated `.evals\<timestamp>.html` in your browser to see results.
-
-### Run a different test
-
-Swap the `--prompts-file` and pick a new `--output` filename:
+### Windows
 
 ```powershell
-$ts = Get-Date -Format 'yyyy-MM-dd_HH-mm-ss-fff'
-runevals --env local --prompts-file ".\evals\rag-01-mortgage-joint-check-threshold.json" --log-level debug --output ".\.evals\$ts.html"
+winget install GitHub.Copilot
+winget install --id GitHub.cli
+copilot --version
+gh auth login
+copilot
 ```
 
-### Run all 10 datasets in one batch (each produces its own HTML report)
+When Copilot CLI opens, enter `/login` if prompted. After authentication, enter
+`/version` to confirm that the interactive session launched successfully.
+
+### macOS
+
+Install Microsoft Company Portal before the first M365 authentication flow.
+The broker authentication flow has a known limitation on Intel-based Macs;
+Apple Silicon Macs are not affected.
+
+```bash
+brew install --cask copilot-cli
+brew install gh
+copilot --version
+gh auth login
+copilot
+```
+
+When Copilot CLI opens, enter `/login` if prompted, then enter `/version`.
+
+### Linux
+
+Using Homebrew for Linux:
+
+```bash
+brew install --cask copilot-cli
+brew install gh
+copilot --version
+gh auth login
+copilot
+```
+
+Alternatively, install Copilot CLI with the official script:
+
+```bash
+curl -fsSL https://gh.io/copilot-install | bash
+```
+
+Install the M365 authentication broker dependencies on Debian or Ubuntu:
+
+```bash
+sudo apt update
+sudo apt install libwebkit2gtk-4.1-0 libdbus-1-dev python3-gi gir1.2-secret-1 libubsan1
+```
+
+When Copilot CLI opens, enter `/login` if prompted, then enter `/version`.
+
+---
+
+## 5. Prepare the agent environment and run an evaluation
+
+Run commands from inside the `zava-insurance-claims` folder.
+
+Agents Toolkit normally generates the following values. Confirm they are
+present and non-empty:
+
+```dotenv
+M365_TITLE_ID="T_your-title-id-here"
+TEAMS_APP_TENANT_ID="your-tenant-id"
+```
+
+For an existing deployed agent that is not in an ATK project, create an `env`
+folder and an `.env.local` file containing the same variables.
+
+**Windows (PowerShell):**
 
 ```powershell
-Get-ChildItem .\evals\rag-*.json, .\evals\mcp-*.json | ForEach-Object {
-    $ts  = Get-Date -Format 'yyyy-MM-dd_HH-mm-ss-fff'
-    $out = ".\.evals\$ts-$([IO.Path]::GetFileNameWithoutExtension($_.Name)).html"
-    Write-Host "`n=== Running $($_.Name) -> $out ===" -ForegroundColor Cyan
-    runevals --env local --prompts-file $_.FullName --log-level debug --output $out
-}
+New-Item -ItemType Directory -Force env
+notepad .\env\.env.local
 ```
+
+**macOS and Linux:**
+
+```bash
+mkdir -p env
+${EDITOR:-nano} ./env/.env.local
+```
+
+Do not commit tenant-specific environment files or secrets.
+
+Run the evaluation:
+
+```text
+runevals --judge-backend github-copilot
+```
+
+The CLI discovers the local environment and a supported dataset under `evals`.
+GitHub Copilot judges the built-in LLM evaluators instead of Azure OpenAI.
+
+---
+
+## 6. Register the included M365 evals skill
+
+This repository includes the skill at `skills/m365-evals-cli`.
+
+From the repository root, register it with Copilot CLI:
+
+**Windows (PowerShell):**
+
+```powershell
+copilot skill add .\skills
+copilot skill list
+```
+
+**macOS and Linux:**
+
+```bash
+copilot skill add ./skills
+copilot skill list
+```
+
+If Copilot CLI is already open, run:
+
+```text
+/skills reload
+/skills info m365-evals-cli
+```
+
+You can also install it as a personal skill by copying the
+`m365-evals-cli` folder into `~/.copilot/skills/`.
+
+---
+
+## 7. Invoke the skill from GitHub Copilot CLI
+
+Start Copilot CLI from the agent or evaluation workspace:
+
+**Windows, macOS, and Linux:**
+
+```text
+copilot
+```
+
+Then enter:
+
+```text
+Use the /m365-evals-cli skill to run evals for this workspace.
+```
+
+The skill checks the eval CLI version and environment, runs with the GitHub
+Copilot judge, starts with concurrency `1`, and writes timestamped results and
+debug logs under `.evals`.
 
 ---
 
@@ -180,17 +317,40 @@ File every finding as a **new issue** in the private repo:
 | Symptom | Cause / Fix |
 |---|---|
 | `runevals : The term 'runevals' is not recognized` | npm global bin folder isn't on PATH. Run `npm config get prefix` and add that folder (Windows) or `<that>/bin` (Mac/Linux) to PATH; reopen the terminal. |
-| `ERROR Missing required environment variables: …` | `env\.env.local` not found or missing keys. Confirm you ran the command from the `zava-insurance-claims` folder, `env\.env.local` exists there, and all 8 variables from §4 are populated. |
+| The installed CLI is old even after an update | A stale global shim may be earlier on PATH. Compare `npm view @microsoft/m365-copilot-eval version`, `npm list -g @microsoft/m365-copilot-eval --depth=0`, and `runevals --version`. On Windows, use `Get-Command runevals -All`; on macOS/Linux, use `which -a runevals`. |
+| `FileNotFoundError` for `judge_prompts.json` | Older packages containing the GitHub Copilot judge omitted this file. Upgrade to the current `@latest` package. Version 1.15.0 includes the file; do not remain on an affected 1.12.x or 1.13.x package. |
+| Node.js version or engine error | The current eval CLI requires Node.js 24.12.0 or newer. Upgrade Node.js, reopen the terminal, and confirm with `node --version`. |
+| EULA has not been accepted | Run `runevals accept-eula`, then rerun the evaluation. |
+| GitHub authentication failed for the Copilot judge | Run `gh auth status`, then `gh auth login` if needed. Confirm the signed-in account has an active GitHub Copilot subscription and that organizational policy permits Copilot CLI. |
+| Copilot judge model is unavailable | Leave `GITHUB_COPILOT_JUDGE_MODEL` unset to use `auto`, or set it to a model available to the signed-in account. There is no `--judge-model` flag. |
+| `ERROR Missing required environment variables: …` | `env\.env.local` was not found or is missing values. Confirm you ran the command from the `zava-insurance-claims` folder and that `M365_TITLE_ID` and `TEAMS_APP_TENANT_ID` are populated as described in §5. |
+| No prompts file was found | Run from the workspace root and confirm a supported `prompts.json`, `evals.json`, or `tests.json` exists in the current directory or under `evals`. Use `--prompts-file <path>` when more than one dataset exists or auto-discovery chooses the wrong file. |
+| Agent not found or inaccessible | Confirm the agent is deployed in the tenant identified by `TEAMS_APP_TENANT_ID`, that `M365_TITLE_ID` is correct, and that the signed-in M365 account can open the agent in Microsoft 365 Copilot. |
+| M365 sign-in fails on macOS or Linux | On macOS, install Company Portal; Intel Macs currently have a known broker limitation. On Debian/Ubuntu, install the broker libraries listed in §4 before rerunning. |
+| Python runtime download, TLS, certificate, or proxy failure | The CLI downloads and caches Python 3.13.x. Confirm HTTPS access to npm and the runtime download endpoints. Configure the organization's approved `HTTPS_PROXY` and certificate trust settings when required; do not disable TLS validation. |
+| HTTP 503 or `no healthy upstream` | The M365 agent service is temporarily unavailable. Wait and rerun later. Start with `--concurrency 1`; repeated 503 responses are an agent-service failure, not a GitHub Copilot judge score. |
 | `Schema validation error: Document validation failed` | The dataset has a field the schema rejects (e.g. `id` at item root, or an unknown evaluator like `ToolCallAccuracy`). Move custom keys under `extensions`; only use evaluators in `EvaluatorMap` (Relevance, Coherence, Groundedness, Similarity, Citations, ExactMatch, PartialMatch, RetrievalQuery, RetrievalResult). |
-| HTML report is empty / no aggregates | Agent didn't respond. Re-test the agent in <https://copilot.microsoft.com>; check WorkIQ A2A endpoint reachability and token acquisition; confirm the agent is provisioned in the same tenant as `TENANT_ID`. |
+| A custom LLM evaluator is skipped | User-authored `.prompty` LLM evaluators are not currently routed through the GitHub Copilot judge. Use built-in LLM evaluators or code-only custom evaluators, or use the Azure judge for that custom Prompty evaluator. |
+| HTML report is empty / no aggregates | Agent didn't respond. Re-test the agent in <https://copilot.microsoft.com>; check WorkIQ A2A endpoint reachability and token acquisition; confirm the agent is provisioned in the same tenant as `TEAMS_APP_TENANT_ID`. |
 | Agent provision fails in VS Code | Check the *Output* panel → *Microsoft 365 Agents Toolkit* channel. Common causes: not signed into M365, custom-app-upload disabled in tenant (admin must enable it), or SharePoint site is inaccessible. |
+| GitHub Copilot judge throttling or hourly-limit errors | This is a known issue when the account exceeds its hourly request limit. Wait one hour, then rerun the evaluation. Split large datasets into smaller files for reruns; datasets containing approximately 40 queries usually complete without throttling problems. |
 
 ---
 
 ## 11. Cleanup
 
+**Windows (PowerShell):**
+
 ```powershell
 Remove-Item -Recurse -Force .\.evals
+# Optional: uninstall the CLI
+npm uninstall -g @microsoft/m365-copilot-eval
+```
+
+**macOS and Linux:**
+
+```bash
+rm -rf ./.evals
 # Optional: uninstall the CLI
 npm uninstall -g @microsoft/m365-copilot-eval
 ```
