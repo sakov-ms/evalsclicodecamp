@@ -293,7 +293,7 @@ Follow the steps below to deploy a model in the Microsoft Foundry portal and
 gather the variables to add to the `.env` files so the evals tool can use them
 to run an evaluation.
 
-#### Deploy GPT-5 mini in Microsoft Foundry
+#### Deploy GPT-5 mini in Microsoft Foundry and use it in Evals CLI
 
 Use the deployment flow from
 [Get your Azure OpenAI endpoint and API key](https://learn.microsoft.com/microsoft-365/copilot/extensibility/evaluations-cli-get-env-values#get-your-azure-openai-endpoint-and-api-key),
