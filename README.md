@@ -206,7 +206,7 @@ You can also install it as a personal skill by copying the
 
 ---
 
-## 6. Invoke the skill from GitHub Copilot CLI
+## 6. Run an evaluation
 
 Start Copilot CLI from the agent or evaluation workspace:
 
@@ -226,10 +226,19 @@ The skill checks the eval CLI version and environment, runs with the GitHub
 Copilot judge, starts with concurrency `1`, and writes timestamped results and
 debug logs under `.evals`.
 
-### Run an evaluation
+When the evaluation finishes, an HTML report opens in your browser and displays
+the scorecard. If you see the scorecard, you successfully ran your first
+evaluation—congratulations!
 
-Before continuing to custom evaluators, ask Copilot CLI to run the bundled
-retrieval-evaluator dataset:
+The skill also asks whether you want it to analyze the report. You can accept
+to receive a summary of pass rates, failed prompts, evaluator reasons, and
+recommended next steps, or decline and review the HTML scorecard yourself.
+
+The remaining exercises are advanced steps.
+
+### Advanced: Run a specific evaluation dataset
+
+Ask Copilot CLI to run the bundled retrieval-evaluator dataset:
 
 ```text
 Can you run an evaluation using the evals cli skill for the zava-insurance-claims agent for the dataset - "C:\Users\sakov\bootcamp\zava-insurance-claims\evals\rag-happy-paths-bundle.json"
@@ -239,7 +248,7 @@ If the repository is cloned elsewhere, replace the absolute Windows path with
 the path to `zava-insurance-claims/evals/rag-happy-paths-bundle.json` on your
 machine. On macOS and Linux, use the corresponding forward-slash path.
 
-### Run Retrieval Evaluators on your agent
+### Advanced: Run Retrieval Evaluators on your agent
 
 The repository also includes the `AssertionJudge` custom evaluator under
 `zava-insurance-claims/custom-evaluators` and its dataset at
@@ -258,19 +267,6 @@ absolute path when the repository is cloned elsewhere.
 For the complete Azure custom-evaluator setup and the separate GPT-5 Microsoft
 Foundry exercise, continue with the
 [advanced custom evaluators guide](docs/advanced-custom-evaluators.md).
-
-### Review the evaluation scorecard
-
-After a run, users can review the scorecard in either of two ways:
-
-1. Ask Copilot CLI to analyze the result:
-
-   ```text
-   Analyze the latest evaluation scorecard under .evals. Summarize pass rates, failed prompts, evaluator reasons, and recommended next steps.
-   ```
-
-2. Open the generated `.evals\<timestamp>.html` report in a browser and inspect
-   the summary, aggregate evaluator scores, and individual prompt cards.
 
 Treat reports and debug logs as potentially sensitive because they can contain
 prompts, agent responses, citations, or retrieved workplace content.
