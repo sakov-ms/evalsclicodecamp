@@ -249,22 +249,114 @@ On macOS and Linux, use
 
 ### Advanced: Run Custom Evaluators on your agent
 
-The repository also includes the `AssertionJudge` custom evaluator under
-`zava-insurance-claims/custom-evaluators` and its dataset at
-`zava-insurance-claims/evals/zava-insurance-claims.json`.
+The repository includes the custom evaluators and datasets required for this
+exercise:
+
+```text
+zava-insurance-claims/
+├── custom-evaluators/
+│   ├── AssertionJudge/
+│   │   ├── AssertionJudge.py
+│   │   └── AssertionJudge.prompty
+│   └── answer_length/
+│       └── answer_length.py
+└── evals/
+    ├── zava-insurance-claims.json
+    └── custom-answer-length-gpt5.json
+```
+
+The `zava-insurance-claims.json` dataset uses the Prompty-based
+`AssertionJudge` custom evaluator. It requires an Azure OpenAI deployment. Add
+the following values to `.env.dev` or `.env.local`:
+
+```dotenv
+AZURE_AI_OPENAI_ENDPOINT="https://<resource>.openai.azure.com/"
+AZURE_AI_MODEL_NAME="<supported-gpt-4x-deployment-name>"
+AZURE_AI_API_VERSION="2024-12-01-preview"
+```
+
+Authenticate with `AZURE_AI_API_KEY` in a local ignored file, or use
+`DefaultAzureCredential` after `az login` with the required Azure role.
 
 In Copilot CLI, enter:
 
 ```text
-Can you run an evaluation for the zava-insurance-claims agent using the evals CLI and the dataset "C:\Users\sakov\bootcamp\zava-insurance-claims\evals\zava-insurance-claims.json"?
+Can you run an evaluation for the zava-insurance-claims agent using the evals CLI and the dataset "zava-insurance-claims\evals\zava-insurance-claims.json"? This dataset uses the AssertionJudge custom evaluator, so use the Azure judge configuration.
 ```
 
-This dataset uses a Prompty-based custom evaluator and requires Azure OpenAI
-configuration. Do not use the GitHub Copilot judge for this run. Replace the
-absolute path when the repository is cloned elsewhere.
+On macOS and Linux, use
+`zava-insurance-claims/evals/zava-insurance-claims.json`.
 
-For the complete Azure custom-evaluator setup and the separate GPT-5 Microsoft
-Foundry exercise, continue with the
+> **GPT-5 limitation:** The eval CLI does not currently route user-authored
+> Prompty evaluators such as `AssertionJudge` through Microsoft Foundry cloud
+> evaluation. Use a supported GPT-4.x Azure OpenAI deployment for this dataset.
+> To use GPT-5.x or an o-series judge, follow the separate code-only custom
+> evaluator exercise below.
+
+#### Use GPT-5 with a code-only custom evaluator
+
+GPT-5.x and o-series judge models require Microsoft Foundry cloud evaluation.
+This path evaluates the built-in `Relevance` and `Coherence` evaluators in
+Foundry while running the included `answer_length` evaluator locally.
+
+You need:
+
+1. A Microsoft Foundry project.
+2. A chat-capable GPT-5.x or o-series deployment, such as `gpt-5-mini`.
+3. The **Azure AI Developer** role on the project.
+4. Azure CLI authentication through Microsoft Entra.
+
+From the Foundry project home page, copy the **Project endpoint**:
+
+![Microsoft Foundry project endpoint highlighted on the project home page](docs/images/gpt5-screen-1.png)
+
+Under **Recent work**, select the GPT-5 deployment:
+
+![GPT-5 mini deployment highlighted under Recent work](docs/images/gpt5-screen-2.png)
+
+On the deployment's **Details** tab, copy the deployment **Name**:
+
+![GPT-5 mini deployment name highlighted on the Details tab](docs/images/gpt5-screen-3.png)
+
+Sign in and configure `.env.dev` or `.env.local`:
+
+```text
+az login
+```
+
+```dotenv
+AZURE_AI_PROJECT_ENDPOINT="https://<account>.services.ai.azure.com/api/projects/<project>"
+AZURE_AI_MODEL_NAME="gpt-5-mini"
+```
+
+If the project is in a different tenant, also set `AZURE_TENANT_ID`. The
+Foundry path uses Entra authentication; `AZURE_AI_API_KEY` is not used.
+
+Run the included GPT-5 dataset from the `zava-insurance-claims` folder:
+
+**Windows (PowerShell):**
+
+```powershell
+runevals `
+  --env local `
+  --prompts-file .\evals\custom-answer-length-gpt5.json `
+  --concurrency 1
+```
+
+**macOS and Linux:**
+
+```bash
+runevals \
+  --env local \
+  --prompts-file ./evals/custom-answer-length-gpt5.json \
+  --concurrency 1
+```
+
+When `AZURE_AI_PROJECT_ENDPOINT` and `AZURE_AI_MODEL_NAME` are set, the
+built-in LLM evaluators automatically use Microsoft Foundry cloud evaluation.
+The report format remains unchanged.
+
+For additional configuration and troubleshooting, continue with the
 [advanced custom evaluators guide](docs/advanced-custom-evaluators.md).
 
 Treat reports and debug logs as potentially sensitive because they can contain

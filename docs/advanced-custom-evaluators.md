@@ -67,11 +67,11 @@ Do not commit keys or tenant-specific environment files.
 From Copilot CLI, enter:
 
 ```text
-Can you run an evaluation for the zava-insurance-claims agent using the evals CLI and the dataset "C:\Users\sakov\bootcamp\zava-insurance-claims\evals\zava-insurance-claims.json"? This dataset uses the AssertionJudge custom evaluator, so use the Azure judge configuration.
+Can you run an evaluation for the zava-insurance-claims agent using the evals CLI and the dataset "zava-insurance-claims\evals\zava-insurance-claims.json"? This dataset uses the AssertionJudge custom evaluator, so use the Azure judge configuration.
 ```
 
-Replace the absolute path if the repository is cloned elsewhere. On macOS and
-Linux, use the corresponding forward-slash path.
+On macOS and Linux, use
+`zava-insurance-claims/evals/zava-insurance-claims.json`.
 
 ### A4. Run the dataset directly
 
