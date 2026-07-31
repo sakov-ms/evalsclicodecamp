@@ -236,7 +236,7 @@ recommended next steps, or decline and review the HTML scorecard yourself.
 
 The remaining exercises are advanced steps.
 
-### Advanced: Run a specific evaluation dataset
+### Advanced: Run Retrieval Evaluators with a specific dataset
 
 Ask Copilot CLI to run the bundled retrieval-evaluator dataset:
 
@@ -247,7 +247,7 @@ Can you run an evaluation using the evals cli skill for the zava-insurance-claim
 On macOS and Linux, use
 `zava-insurance-claims/evals/rag-happy-paths-bundle.json`.
 
-### Advanced: Run Retrieval Evaluators on your agent
+### Advanced: Run Custom Evaluators on your agent
 
 The repository also includes the `AssertionJudge` custom evaluator under
 `zava-insurance-claims/custom-evaluators` and its dataset at
