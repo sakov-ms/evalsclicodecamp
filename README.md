@@ -258,17 +258,6 @@ recommended next steps, or decline and review the HTML scorecard yourself.
 
 The remaining exercises are advanced steps.
 
-### Advanced: Run Retrieval Evaluators with a specific dataset
-
-Ask Copilot CLI to run the bundled retrieval-evaluator dataset:
-
-```text
-Can you run an evaluation using the evals cli skill for the zava-insurance-claims agent for the dataset - "zava-insurance-claims\evals\rag-happy-paths-bundle.json"
-```
-
-On macOS and Linux, use
-`zava-insurance-claims/evals/rag-happy-paths-bundle.json`.
-
 ### Advanced: Run Custom Evaluators on your agent
 
 The repository includes the custom evaluators and datasets required for this
@@ -392,6 +381,17 @@ The results and report format remain unchanged.
 
 For additional configuration and troubleshooting, continue with the
 [advanced custom evaluators guide](docs/advanced-custom-evaluators.md).
+
+### Advanced: Run Retrieval Evaluators with a specific dataset
+
+Ask Copilot CLI to run the bundled retrieval-evaluator dataset:
+
+```text
+Can you run an evaluation using the evals cli skill for the zava-insurance-claims agent for the dataset - "zava-insurance-claims\evals\rag-happy-paths-bundle.json" and use the Azure judge configuration.
+```
+
+On macOS and Linux, use
+`zava-insurance-claims/evals/rag-happy-paths-bundle.json`.
 
 Treat reports and debug logs as potentially sensitive because they can contain
 prompts, agent responses, citations, or retrieved workplace content.
