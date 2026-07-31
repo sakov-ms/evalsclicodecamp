@@ -308,21 +308,7 @@ Can you run an evaluation for the zava-insurance-claims agent using the evals CL
 On macOS and Linux, use
 `zava-insurance-claims/evals/zava-insurance-claims.json`.
 
-> **GPT-5 limitation:** The eval CLI does not currently route user-authored
-> Prompty evaluators such as `AssertionJudge` through Microsoft Foundry cloud
-> evaluation. Use a supported GPT-4.x Azure OpenAI deployment for this dataset.
-> To use GPT-5.x or an o-series judge, follow the separate code-only custom
-> evaluator exercise below.
-
-#### GPT-5.x and o-series judge models (Microsoft Foundry cloud evaluation)
-
-GPT-5.x and o-series models cannot be used with the default local evaluators.
-To use one of these models as the LLM judge, point the CLI at a Microsoft
-Foundry project. The built-in LLM evaluators (`Relevance`, `Coherence`,
-`Groundedness`, and `Similarity`) then run through Microsoft Foundry cloud
-evaluation. The included `answer_length` code evaluator still runs locally.
-
-This routing is automatic and independent of `--judge-backend`.
+#### Deploy GPT-5 mini in Microsoft Foundry
 
 Use the deployment flow from
 [Get your Azure OpenAI endpoint and API key](https://learn.microsoft.com/microsoft-365/copilot/extensibility/evaluations-cli-get-env-values#get-your-azure-openai-endpoint-and-api-key),
