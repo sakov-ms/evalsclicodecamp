@@ -6,6 +6,7 @@
 
 | Tool | Why |
 |---|---|
+| **Git** and a **GitHub account** | Required to clone this repository from GitHub. Install Git from <https://git-scm.com/downloads> and confirm it with `git --version`. |
 | **VS Code** | Host for the M365 Agents Toolkit extension that provisions the agent. |
 | **Microsoft 365 Agents Toolkit** (VS Code extension) | Signs you into M365, builds the agent app package, and uploads it to your tenant. Make sure the ATK side bar icon appears on the left rail.|
 | **Node.js 18+** and **npm** | Required to install the `@microsoft/m365-copilot-eval` CLI. |
