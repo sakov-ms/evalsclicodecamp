@@ -241,12 +241,11 @@ The remaining exercises are advanced steps.
 Ask Copilot CLI to run the bundled retrieval-evaluator dataset:
 
 ```text
-Can you run an evaluation using the evals cli skill for the zava-insurance-claims agent for the dataset - "C:\Users\sakov\bootcamp\zava-insurance-claims\evals\rag-happy-paths-bundle.json"
+Can you run an evaluation using the evals cli skill for the zava-insurance-claims agent for the dataset - "zava-insurance-claims\evals\rag-happy-paths-bundle.json"
 ```
 
-If the repository is cloned elsewhere, replace the absolute Windows path with
-the path to `zava-insurance-claims/evals/rag-happy-paths-bundle.json` on your
-machine. On macOS and Linux, use the corresponding forward-slash path.
+On macOS and Linux, use
+`zava-insurance-claims/evals/rag-happy-paths-bundle.json`.
 
 ### Advanced: Run Retrieval Evaluators on your agent
 
