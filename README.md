@@ -178,8 +178,8 @@ When Copilot CLI opens, enter `/login` if prompted, then enter `/version`.
 
 Run commands from inside the `zava-insurance-claims` folder.
 
-Agents Toolkit normally generates the following values. Confirm they are
-present and non-empty:
+Agents Toolkit normally generates an `env` folder with the `.env.dev` file,
+and it contains the following values. Confirm they are present and non-empty:
 
 ```dotenv
 M365_TITLE_ID="T_your-title-id-here"
