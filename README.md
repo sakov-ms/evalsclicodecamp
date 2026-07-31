@@ -289,6 +289,9 @@ zava-insurance-claims/
 
 The `zava-insurance-claims.json` dataset uses the Prompty-based
 `AssertionJudge` custom evaluator. It requires an Azure OpenAI deployment.
+Follow the steps below to deploy a model in the Microsoft Foundry portal and
+gather the variables to add to the `.env` files so the evals tool can use them
+to run an evaluation.
 
 #### Deploy GPT-5 mini in Microsoft Foundry
 
