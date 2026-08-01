@@ -11,6 +11,7 @@
 | **Microsoft 365 Agents Toolkit** (VS Code extension) | Signs you into M365, builds the agent app package, and uploads it to your tenant. Make sure the ATK side bar icon appears on the left rail.|
 | **Node.js 18+** and **npm** | Required to install the `@microsoft/m365-copilot-eval` CLI. |
 | **Python 3.10+** | Required by the eval CLI runtime. |
+| **Microsoft 365 test tenant** | Use an **MSIT** or **WW test tenant** to provision the agent and complete this tutorial. |
 | **Access to the Zava Claims SharePoint site** | The agent's knowledge source - 'https://microsoft.sharepoint-df.com/sites/CXDev/Shared Documents/Zava Insurance Documents' |
 
 These prerequisites apply to Windows, macOS, and Linux. The current eval CLI
@@ -105,7 +106,7 @@ runevals --version
 runevals --help
 ```
 
-> The installed eval CLI version must be **greater than 1.12.0**.
+> The installed eval CLI version must be **1.15.0 or later**.
 > If `runevals` is not recognized, ensure your npm global bin folder is on PATH:
 > `npm config get prefix` → add `<that path>` (Windows) or `<that path>/bin` (macOS/Linux) to PATH.
 
